@@ -1,10 +1,18 @@
 #!/usr/bin/env sh
-XVBF='xvfb-run  -d '
-XVBF=''
+XVBF_BIN='xvfb-run'
 
-$XVBF java \
--Dlog4j.logger.simulation='DEBUG, SimFileLog, SimConLog' \
--Dde.renew.gui.autostart=false \
--Dde.renew.simulatorMode=-1 \
--Dde.renew.splashscreen.enabled=false \
- -p ./renew41:./renew41/libs -m de.renew.loader script ./sim-script
+if ! command -v $XVBF_BIN 2>&1 >/dev/null
+RUN_CMD='xvfb-run  -d '
+then
+RUN_CMD=''
+fi
+
+
+$RUN_CMD java \
+-Dde.renew.splashscreen.enabled='false' \
+-Dde.renew.gui.autostart='false' \
+-Dde.renew.simulatorMode='-1' \
+-Dlog4j.configuration=./log4j.properties \
+-p ./renew41:./renew41/libs \
+-m de.renew.loader \
+script ./sim-script

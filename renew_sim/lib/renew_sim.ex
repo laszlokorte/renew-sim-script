@@ -1,18 +1,6 @@
-Mix.install([
-  {:erlexec, "~> 2.0"}
-])
-
 defmodule Run do
   def main do
-    :exec.start()
-    {:ok, process, pid} = :exec.run_link("run.sh", [:stdin, :stdout, :stderr])
-    monitor = Process.monitor(process)
-
-    spawn_link(fn ->
-      handle_input(process)
-    end)
-
-    process_output(monitor, pid)
+    
   end
 
   def process_output(monitor, pid) do
@@ -39,4 +27,3 @@ defmodule Run do
   end
 end
 
-Run.main()

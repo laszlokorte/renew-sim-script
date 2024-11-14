@@ -1,0 +1,5 @@
+keepalive on
+setFormalism Java Net Compiler
+ex ShadowNetSystem -a ./renew41/samples/simple/colored.rnw -o ./out/foo.sns
+startsimulation ./out/foo.sns colored -i
+simulation step

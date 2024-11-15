@@ -1,2 +1,4 @@
 renew41/
 .DS_Store
+*.class
+*.jar

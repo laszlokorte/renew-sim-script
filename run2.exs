@@ -1,20 +1,26 @@
 defmodule Shell do
-  def exec(exe, args) when is_list(args) do
-    port =
-      Port.open(
+  def exec() do
+
+      port = Port.open(
         {:spawn_executable, System.find_executable("java")},
         [
           :binary,
+          :eof,
           :stream,
           :stderr_to_stdout,
+          :exit_status,
+          :use_stdio,
           :hide,
           args: [
+            "-jar",
+            "Interceptor.jar",
+            "java",
             "-Dde.renew.splashscreen.enabled=false",
             "-Dde.renew.gui.autostart=false",
             "-Dde.renew.simulatorMode=-1",
             "-Dlog4j.configuration=./log4j.properties",
             "-p",
-            "./renew41;./renew41/libs",
+            "./renew41:./renew41/libs",
             "-m",
             "de.renew.loader",
             "script",
@@ -22,21 +28,31 @@ defmodule Shell do
           ]
         ]
       )
+    Process.flag(:trap_exit, true)
+    Process.link port
+    Port.monitor(port)
 
     c = self()
 
     spawn(fn ->
-      handle_input(port)
+      handle_input(c, port)
     end)
 
     handle_output(port)
   end
 
-  def handle_input(port) do
-    cmd = IO.gets("> ")
-    Port.command(port, "help\n")
+  def handle_input(c, port) do
 
-    handle_input(port)
+    case IO.gets("> ") do
+      :eof ->
+        send(port, {c, :close})
+      cmd ->
+        send(port, {c, {:command, cmd}})
+
+      handle_input(c, port)
+    end
+
+
   end
 
   def handle_output(port) do
@@ -48,10 +64,14 @@ defmodule Shell do
       {^port, {:exit_status, status}} ->
         status
 
+      {:EXIT, ^port, exit_code} ->
+        IO.puts(exit_code)
+
       e ->
+        IO.puts("xxxx")
         dbg(e)
     end
   end
 end
 
-Shell.exec("./run.sh", [])
+Shell.exec()

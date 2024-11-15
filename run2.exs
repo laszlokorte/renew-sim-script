@@ -1,7 +1,13 @@
 defmodule Shell do
   def exec() do
+    separator =
+      case :os.type() do
+        {:win32, _} -> ";"
+        {:unix, _} -> ":"
+      end
 
-      port = Port.open(
+    port =
+      Port.open(
         {:spawn_executable, System.find_executable("java")},
         [
           :binary,
@@ -12,24 +18,32 @@ defmodule Shell do
           :use_stdio,
           :hide,
           args: [
-            "-jar",
-            "Interceptor.jar",
-            "java",
+            # "-jar",
+            # "Interceptor.jar",
+            # "java",
+
+            # "-jar",
+            # "Repl.jar"
+
+            "-Djline.terminal=off",
             "-Dde.renew.splashscreen.enabled=false",
             "-Dde.renew.gui.autostart=false",
             "-Dde.renew.simulatorMode=-1",
             "-Dlog4j.configuration=./log4j.properties",
+            "-Dde.renew.plugin.autoLoad=false",
+            "-Dde.renew.plugin.load=Renew Util, Renew Simulator, Renew Formalism, Renew Misc, Renew PTChannel,  Renew Window Management, Renew JHotDraw, Renew Gui, Renew Formalism Gui, Renew Logging, Renew NetComponents, Renew Console, Renew FreeHep Export",
             "-p",
-            "./renew41:./renew41/libs",
+            "./renew41" <> separator <> "./renew41/libs",
             "-m",
             "de.renew.loader",
             "script",
-            "./sim-script"
+            "sim-script"
           ]
         ]
       )
+
     Process.flag(:trap_exit, true)
-    Process.link port
+    Process.link(port)
     Port.monitor(port)
 
     c = self()
@@ -42,17 +56,18 @@ defmodule Shell do
   end
 
   def handle_input(c, port) do
-
     case IO.gets("> ") do
       :eof ->
         send(port, {c, :close})
+
       cmd ->
+        IO.puts("you entered")
+        IO.puts(cmd)
+
         send(port, {c, {:command, cmd}})
 
-      handle_input(c, port)
+        handle_input(c, port)
     end
-
-
   end
 
   def handle_output(port) do

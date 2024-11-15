@@ -1,4 +1,4 @@
-keepalive off
+keepalive on
 setFormalism Java Net Compiler
 ex ShadowNetSystem -a ./example.rnw -o ./out/example.sns
 startsimulation ./out/example.sns example -i

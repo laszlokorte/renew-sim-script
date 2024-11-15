@@ -1,0 +1,1 @@
+TYPE CON | java "-Dde.renew.splashscreen.enabled=false" "-Dde.renew.gui.autostart=false" "-Dde.renew.simulatorMode=-1" "-Dde.renew.plugin.autoLoad=false" "-Dde.renew.plugin.load=Renew Util,Renew Simulator, Renew Formalism,Renew Misc, Renew Console, Renew JHotDraw, Renew Window Management" -p "F:/aose/Renew/dist;F:/aose/Renew/dist/libs" -m de.renew.loader keepalive on

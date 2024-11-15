@@ -1,1 +1,1 @@
-TYPE CON | java "-Dde.renew.splashscreen.enabled=false" "-Dde.renew.gui.autostart=false" "-Dde.renew.simulatorMode=-1" "-Dlog4j.configuration=./log4j.properties" -p ./renew41;./renew41/libs -m de.renew.loader script ./sim-script
+TYPE CON | java "-Dde.renew.splashscreen.enabled=false" "-Dde.renew.gui.autostart=false" "-Dde.renew.simulatorMode=-1" "-Dde.renew.plugin.autoLoad=false" "-Dde.renew.plugin.load=Renew Util,Renew Simulator, Renew Formalism,Renew Misc, Renew Console, Renew JHotDraw, Renew Window Management"  -p "./renew41;./renew41/libs" -m de.renew.loader keepalive on

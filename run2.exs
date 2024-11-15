@@ -18,12 +18,9 @@ defmodule Shell do
           :use_stdio,
           :hide,
           args: [
-            # "-jar",
-            # "Interceptor.jar",
-            # "java",
-
-            # "-jar",
-            # "Repl.jar"
+             "-jar",
+             "Interceptor.jar",
+             "java",
 
             "-Djline.terminal=off",
             "-Dde.renew.splashscreen.enabled=false",
@@ -31,7 +28,7 @@ defmodule Shell do
             "-Dde.renew.simulatorMode=-1",
             "-Dlog4j.configuration=./log4j.properties",
             "-Dde.renew.plugin.autoLoad=false",
-            "-Dde.renew.plugin.load=Renew Util, Renew Simulator, Renew Formalism, Renew Misc, Renew PTChannel,  Renew Window Management, Renew JHotDraw, Renew Gui, Renew Formalism Gui, Renew Logging, Renew NetComponents, Renew Console, Renew FreeHep Export",
+            "-Dde.renew.plugin.load=Renew Util, Renew Simulator, Renew Formalism, Renew Misc, Renew PTChannel, Renew Remote, Renew Window Management, Renew JHotDraw, Renew Gui, Renew Formalism Gui, Renew Logging, Renew NetComponents, Renew Console, Renew FreeHep Export",
             "-p",
             "./renew41" <> separator <> "./renew41/libs",
             "-m",
@@ -44,6 +41,7 @@ defmodule Shell do
 
     Process.flag(:trap_exit, true)
     Process.link(port)
+
     Port.monitor(port)
 
     c = self()
@@ -61,9 +59,6 @@ defmodule Shell do
         send(port, {c, :close})
 
       cmd ->
-        IO.puts("you entered")
-        IO.puts(cmd)
-
         send(port, {c, {:command, cmd}})
 
         handle_input(c, port)
